@@ -1,0 +1,7 @@
+build
+docker
+!docker/nginx.conf
+node_modules
+.gitignore
+*.yml
+*.md
