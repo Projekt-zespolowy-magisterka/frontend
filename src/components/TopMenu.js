@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import './TopMenu.css';
+import LogoSection from '../components/LogoSection';
 
 function TopMenu({ username, onLogout }) {
   const navigate = useNavigate();
@@ -12,15 +13,16 @@ function TopMenu({ username, onLogout }) {
 
   return (
     <div className="top-menu">
-      <div className="nav-links">
-        <NavLink to="/stock-overview" activeClassName="active">
-          Stock Overview
-        </NavLink>
-        <NavLink to="/watchlist" activeClassName="active">
-          Watchlist
-        </NavLink>
-      </div>
-      <div className="user-section">
+      <LogoSection />
+      <div className="right-section">
+        <div className="nav-links">
+          <NavLink to="/stock-overview" activeClassName="active">
+            Stock Overview
+          </NavLink>
+          <NavLink to="/watchlist" activeClassName="active">
+            Watchlist
+          </NavLink>
+        </div>
         <span className="username">{username}</span>
         <button onClick={handleLogout} className="logout-button">Logout</button>
       </div>
