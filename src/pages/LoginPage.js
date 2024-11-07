@@ -5,6 +5,7 @@ import BackgroundImage from '../components/BackgroundImage';
 import LogoSection from '../components/LogoSection';
 import AuthForm from '../components/AuthForm';
 import appTheme from '../theme';
+import {useNavigate} from "react-router-dom";
 
 const LoginPageContainer = styled(Container)({
     display: 'flex',
@@ -16,13 +17,15 @@ const LoginPageContainer = styled(Container)({
     position: 'relative',
 });
 
-const LoginPage = () => {
+const LoginPage = ({ onLogin }) => {
     const [loginError, setLoginError] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = ({ email, password }) => {
         setLoginError('');
         if (email === 'test@example.com' && password === 'password') {
-            alert('Login successful!');
+            onLogin(email);
+            navigate('/stock-overview');
         } else {
             setLoginError('Invalid email or password');
         }

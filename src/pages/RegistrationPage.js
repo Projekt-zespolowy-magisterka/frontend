@@ -5,6 +5,7 @@ import BackgroundImage from '../components/BackgroundImage';
 import LogoSection from '../components/LogoSection';
 import AuthForm from '../components/AuthForm';
 import appTheme from '../theme';
+import {useNavigate} from "react-router-dom";
 
 const RegistrationPageContainer = styled(Container)({
     display: 'flex',
@@ -16,8 +17,10 @@ const RegistrationPageContainer = styled(Container)({
     position: 'relative',
 });
 
-const RegistrationPage = () => {
+
+const RegistrationPage = ({ onLogin }) => {
     const [registrationError, setRegistrationError] = useState('');
+    const navigate = useNavigate();
 
     const handleRegister = ({ email, password, confirmPassword }) => {
         setRegistrationError('');
@@ -25,7 +28,8 @@ const RegistrationPage = () => {
             setRegistrationError('Passwords do not match');
             return;
         }
-        alert('Registration successful!');
+        onLogin(email);
+        navigate('/stock-overview');
     };
 
     return (
