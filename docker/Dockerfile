@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose port 3000 (the port React app runs on)
-EXPOSE 3000
+EXPOSE 3001
 
 # Start the React app
 CMD ["npm", "start"]

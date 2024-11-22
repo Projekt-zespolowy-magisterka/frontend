@@ -7,6 +7,7 @@
   color: #333333;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
   height: 60px;
+  font-family: Arial, sans-serif; /* Zmieniona rodzina czcionek */
 }
 
 .logo {
@@ -54,6 +55,12 @@
 .username {
   font-weight: 500;
   color: #333333;
+}
+
+.username::after {
+  content: " (John Doe)"; /* Dodanie imienia i nazwiska */
+  color: #555555;
+  font-style: italic;
 }
 
 .logout-button {

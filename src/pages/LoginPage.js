@@ -6,6 +6,7 @@ import LogoSection from '../components/LogoSection';
 import AuthForm from '../components/AuthForm';
 import appTheme from '../theme';
 import {useNavigate} from "react-router-dom";
+import {authenticateUser} from "../service/authService";
 
 const LoginPageContainer = styled(Container)({
     display: 'flex',
@@ -21,13 +22,25 @@ const LoginPage = ({ onLogin }) => {
     const [loginError, setLoginError] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = ({ email, password }) => {
+
+    const handleLogin = async ({ email, password }) => {
         setLoginError('');
-        if (email === 'test@example.com' && password === 'password') {
-            onLogin(email);
-            navigate('/stock-overview');
-        } else {
-            setLoginError('Invalid email or password');
+        try {
+            const response = await authenticateUser({ email, password });
+
+            if (response) {
+                onLogin(email, response.token, response.id);
+                console.log('User login:', response);
+                navigate('/stock-overview');
+            } else {
+                throw new Error('Invalid response from server');
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                setLoginError('Invalid email or password');
+            } else {
+                setLoginError(error.message || 'An unexpected error occurred');
+            }
         }
     };
 
