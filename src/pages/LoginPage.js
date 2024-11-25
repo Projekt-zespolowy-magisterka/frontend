@@ -18,6 +18,13 @@ const LoginPageContainer = styled(Container)({
     position: 'relative',
 });
 
+const testUser = {
+    email: 'test@example.com',
+    password: 'test',
+    token: 'testToken123',
+    id: '12345',
+};
+
 const LoginPage = ({ onLogin }) => {
     const [loginError, setLoginError] = useState('');
     const navigate = useNavigate();
@@ -40,6 +47,18 @@ const LoginPage = ({ onLogin }) => {
                 setLoginError('Invalid email or password');
             } else {
                 setLoginError(error.message || 'An unexpected error occurred');
+            }
+
+            console.error('Server login error:', error);
+
+            // Jeżeli serwer zawiedzie, próbujemy logowania na konto testowe
+            if (email === testUser.email && password === testUser.password) {
+                console.log('Logging in with test account');
+                onLogin(testUser.email, testUser.token, testUser.id);
+                navigate('/stock-overview');
+            } else {
+                // Wyświetlamy błąd w UI
+                setLoginError('Invalid email or password (including test account)');
             }
         }
     };
