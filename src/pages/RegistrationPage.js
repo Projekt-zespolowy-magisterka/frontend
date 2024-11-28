@@ -6,6 +6,7 @@ import LogoSection from '../components/LogoSection';
 import AuthForm from '../components/AuthForm';
 import appTheme from '../theme';
 import {useNavigate} from "react-router-dom";
+import {registerUser} from "../service/authService";
 
 const RegistrationPageContainer = styled(Container)({
     display: 'flex',
@@ -21,15 +22,40 @@ const RegistrationPageContainer = styled(Container)({
 const RegistrationPage = ({ onLogin }) => {
     const [registrationError, setRegistrationError] = useState('');
     const navigate = useNavigate();
-
-    const handleRegister = ({ email, password, confirmPassword }) => {
+    const handleRegister = async (formData) => {
         setRegistrationError('');
+        const { email, password, confirmPassword, firstName, lastName, phone, city, street, zip } =
+            formData;
+
         if (password !== confirmPassword) {
             setRegistrationError('Passwords do not match');
             return;
         }
-        onLogin(email);
-        navigate('/stock-overview');
+
+        try {
+            // Call the registerUser function and expect a structured response
+            const response = await registerUser({
+                email,
+                password,
+                firstName,
+                lastName,
+                phone,
+                address: { city, street, zip },
+            });
+
+
+            if (response && response.token && response.id) {
+                console.log('User registered:', response);
+
+                onLogin(email, response.token, response.id);
+                navigate('/stock-overview');
+            } else {
+                throw new Error('Invalid registration response');
+            }
+        } catch (error) {
+            console.error('Registration failed:', error);
+            setRegistrationError(error.message || 'Registration failed');
+        }
     };
 
     return (
@@ -42,6 +68,12 @@ const RegistrationPage = ({ onLogin }) => {
                     { name: 'email', label: 'Email', type: 'email' },
                     { name: 'password', label: 'Password', type: 'password' },
                     { name: 'confirmPassword', label: 'Confirm Password', type: 'password' },
+                    { name: 'firstName', label: 'First Name', type: 'text' },
+                    { name: 'lastName', label: 'Last Name', type: 'text' },
+                    { name: 'phone', label: 'Phone Number', type: 'tel' },
+                    { name: 'city', label: 'City', type: 'text' },
+                    { name: 'street', label: 'Street', type: 'text' },
+                    { name: 'zip', label: 'ZIP Code', type: 'text' },
                 ]}
                 onSubmit={handleRegister}
                 error={registrationError}

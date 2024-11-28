@@ -6,6 +6,7 @@ import RegistrationPage from "./pages/RegistrationPage";
 import TopMenu from './components/TopMenu';
 import StockOverview from './pages/StockOverview';
 import Watchlist from './pages/Watchlist';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
@@ -21,9 +22,11 @@ function App() {
     }
   }, []);
 
-  const handleLogin = (userEmail) => {
+  const handleLogin = (userEmail, userToken, userId) => {
     sessionStorage.setItem('isLoggedIn', true);
     sessionStorage.setItem('username', userEmail);
+    sessionStorage.setItem('userToken', userToken);
+    sessionStorage.setItem('userId', userId);
     setIsLoggedIn(true);
     setUsername(userEmail);
   };
@@ -31,6 +34,8 @@ function App() {
   const handleLogout = () => {
     sessionStorage.removeItem('isLoggedIn');
     sessionStorage.removeItem('username');
+    sessionStorage.removeItem('userToken');
+    sessionStorage.removeItem('userId');
     setIsLoggedIn(false);
     setUsername('');
   };
