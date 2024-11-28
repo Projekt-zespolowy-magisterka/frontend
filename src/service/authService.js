@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8081/app/user';
+const API_BASE_URL = 'http://localhost:8080/app/user';
 
 export const registerUser = async (registrationData) => {
     try {
         const response = await axios.post(`${API_BASE_URL}/register`, registrationData, {
             headers: {
-                'Content-Type': 'application/json', // Specify JSON content type
+                'Content-Type': 'application/json',
             },
             withCredentials: true,
         });
@@ -40,6 +40,7 @@ export const authenticateUser = async (authRequest) => {
             },
             withCredentials: true,
         });
+        console.log(response);
         return response.data;
     } catch (error) {
         throw error;

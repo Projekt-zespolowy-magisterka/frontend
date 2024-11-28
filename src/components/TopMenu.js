@@ -14,14 +14,14 @@ function TopMenu({ username, onLogout }) {
                 to="/stock-overview"
                 className={({ isActive }) => (isActive ? 'active' : undefined)}
             >
-              Stock Overview
+                Explore
             </NavLink>
-            <NavLink
-                to="/watchlist"
-                className={({ isActive }) => (isActive ? 'active' : undefined)}
-            >
-              Watchlist
-            </NavLink>
+            {/*<NavLink*/}
+            {/*    to="/watchlist"*/}
+            {/*    className={({ isActive }) => (isActive ? 'active' : undefined)}*/}
+            {/*>*/}
+            {/*  Watchlist*/}
+            {/*</NavLink>*/}
           </div>
           <span className="username">{username}</span>
           <button onClick={onLogout} className="logout-button">Logout</button>
