@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import mockedData from "../utils/mockedData";
-import FiltersSidebar from "../components/FiltersSidebar";
-import StocksTable from "../components/StocksTable";
-import CategoryTabs from "../components/CategoryTabs";
+import FiltersSidebar from "../components/stockOverview/FiltersSidebar";
+import StocksTable from "../components/stockOverview/StocksTable";
+import CategoryTabs from "../components/stockOverview/CategoryTabs";
 
 function StockOverview() {
     const [stockData, setStockData] = useState([]);

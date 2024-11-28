@@ -1,6 +1,10 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
 
 function StockRow({ stock, index, onToggleFavorite }) {
+
+    const navigate = useNavigate();
+
     const formatChange = (value) => {
         const isPositive = value >= 0;
         return (
@@ -30,7 +34,7 @@ function StockRow({ stock, index, onToggleFavorite }) {
 
                 {stock.symbol}
             </td>
-            <td>{stock.name}</td>
+            <td onClick={() => navigate(`/stock/${stock.symbol}`)} style={{ cursor: "pointer" }}>{stock.name}</td>
             <td>${stock.price.toFixed(2)}</td>
             <td>{stock.peRatio.toFixed(2)}</td>
             <td>{stock.volume.toLocaleString()}</td>
