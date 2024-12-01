@@ -43,6 +43,7 @@ const LoginPage = ({ onLogin }) => {
                 throw new Error('Invalid response from server');
             }
         } catch (error) {
+
             if (error.response && error.response.status === 401) {
                 setLoginError('Invalid email or password');
             } else {
@@ -58,6 +59,7 @@ const LoginPage = ({ onLogin }) => {
                 navigate('/stock-overview');
             } else {
                 // Wyświetlamy błąd w UI
+
                 setLoginError('Invalid email or password (including test account)');
             }
         }

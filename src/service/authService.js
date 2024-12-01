@@ -7,7 +7,7 @@ export const registerUser = async (registrationData) => {
     try {
         const response = await axios.post(`${API_BASE_URL}/register`, registrationData, {
             headers: {
-                'Content-Type': 'application/json', // Specify JSON content type
+                'Content-Type': 'application/json',
             },
             withCredentials: true,
         });
@@ -41,6 +41,7 @@ export const authenticateUser = async (authRequest) => {
             },
             withCredentials: true,
         });
+        console.log(response);
         return response.data;
     } catch (error) {
         throw error;
