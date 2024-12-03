@@ -1,13 +1,13 @@
-version: '3.8'
-
-services:
-  frontend:
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
-    image: stockmaster-frontend
-    container_name: stockmaster-frontend
-    ports:
-      - "3001:3001"
-    environment:
-      - PORT=3001
+#version: '3.8'
+#
+#services:
+#  frontend:
+#    build:
+#      context: ../
+#      dockerfile: docker/Dockerfile
+#    image: stockmaster-frontend
+#    container_name: stockmaster-frontend
+#    ports:
+#      - "3001:3001"
+#    environment:
+#      - PORT=3001

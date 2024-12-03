@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+//TODO zrobić tutaj profile i stworzyć plik environment w którym będzie oddzielona ścieżka serwera od końdowej (np. od /app/user)
 const API_BASE_URL = 'http://localhost:8080/app/user';
 
 export const registerUser = async (registrationData) => {
