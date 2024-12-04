@@ -28,11 +28,11 @@ function StockDetails() {
     }
 
     return (
-        <div className="container-fluid mt-5">
-            <BackButton onClick={() => navigate(-1)} />
+        <div className="container mt-1">
+            {/*<BackButton onClick={() => navigate(-1)} />*/}
             <StockHeader symbol={stock.symbol} name={stock.name} />
             <StockPrice currentPrice={stock.currentPrice} change={stock.change} />
-            <TimeFrameSelector timeFrames={stock.timeFrames} />
+            {/*<TimeFrameSelector timeFrames={stock.timeFrames} />*/}
             <EnhancedStockChart data={initialData}/>
             <Scores scores={stock.scores} />
             <Statistics statistics={stock.statistics} />
