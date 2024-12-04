@@ -1,7 +1,7 @@
 import React from "react";
 import RangeFilter from "./RangeFilter";
 
-function FiltersSidebar({ filters, onFilterChange }) {
+function FiltersSidebar({ filters, onFilterChange, onResetFilters, hasActiveFilters }) {
     const handleRangeChange = (e, filterName, bound) => {
         const value = parseInt(e.target.value, 10) || null; // Null dla pustego pola
         onFilterChange(filterName, bound === "min" ? [value, filters[filterName]?.[1]] : [filters[filterName]?.[0], value]);
@@ -13,8 +13,18 @@ function FiltersSidebar({ filters, onFilterChange }) {
     };
 
     return (
-        <div className="border rounded p-3 bg-white shadow-sm">
-            <h5>Filters</h5>
+        <div className="border rounded p-4 bg-white shadow">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="text-primary m-0">Filters</h5>
+                {hasActiveFilters && (
+                    <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={onResetFilters}
+                    >
+                        Reset All
+                    </button>
+                )}
+            </div>
 
             {/* Search Filter */}
             <div className="mt-3">
@@ -67,8 +77,6 @@ function FiltersSidebar({ filters, onFilterChange }) {
                 values={filters.change1Y || [null, null]}
                 onRangeChange={handleRangeChange}
             />
-
-
         </div>
     );
 }

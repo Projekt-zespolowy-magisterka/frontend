@@ -37,6 +37,7 @@ function App() {
     localStorage.removeItem('username');
     localStorage.removeItem('userToken');
     localStorage.removeItem('userId');
+    localStorage.removeItem('profileImage');
     setIsLoggedIn(false);
     setUsername('');
   };

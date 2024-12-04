@@ -11,27 +11,24 @@ export const registerUser = async (registrationData) => {
             },
             withCredentials: true,
         });
-        return response.data; // Return the response data directly
+        return response.data;
     } catch (error) {
-        // Enhanced error handling with detailed fallback
         console.error('Error during registration:', error);
 
         if (error.response) {
-            // Server responded with a status other than 2xx
             const { status, data } = error.response;
             console.error(`Server Error [${status}]:`, data);
             throw data?.message || `Server Error: ${status}`;
         } else if (error.request) {
-            // No response received from the server
             console.error('No response received from server:', error.request);
             throw 'Unable to connect to the server. Please try again later.';
         } else {
-            // Error in setting up the request
             console.error('Request setup error:', error.message);
             throw 'An unexpected error occurred. Please try again.';
         }
     }
 };
+
 
 export const authenticateUser = async (authRequest) => {
     try {
@@ -39,11 +36,25 @@ export const authenticateUser = async (authRequest) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            withCredentials: true,
+            // withCredentials: true,
         });
-        console.log(response);
         return response.data;
     } catch (error) {
-        throw error;
+        if (error.response) {
+            // Server-side error (received a response but with an error status code)
+            const { status, data } = error.response;
+            console.error(`Error: Server responded with status ${status}`, data);
+            throw new Error(
+                data?.message || `Authentication failed with status code ${status}`
+            );
+        } else if (error.request) {
+            // Network error (request made but no response received)
+            console.error('Error: No response received from the server', error.request);
+            throw new Error('Network error: Unable to connect to the authentication service.');
+        } else {
+            // Client-side error (error setting up the request)
+            console.error('Error: Request setup failed', error.message);
+            throw new Error(`Unexpected error: ${error.message}`);
+        }
     }
 };

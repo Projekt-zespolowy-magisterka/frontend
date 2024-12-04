@@ -28,7 +28,7 @@ function StockDetails() {
     }
 
     return (
-        <div className="container mt-5">
+        <div className="container-fluid mt-5">
             <BackButton onClick={() => navigate(-1)} />
             <StockHeader symbol={stock.symbol} name={stock.name} />
             <StockPrice currentPrice={stock.currentPrice} change={stock.change} />

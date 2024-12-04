@@ -5,11 +5,7 @@ import StocksTable from "../components/stockOverview/StocksTable";
 import CategoryTabs from "../components/stockOverview/CategoryTabs";
 
 function StockOverview() {
-    const [stockData, setStockData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-    const [filters, setFilters] = useState({
+    const initialFilters = {
         peRatio: [0, 40],
         price: [null, null],
         search: "",
@@ -17,8 +13,13 @@ function StockOverview() {
         change1M: [null, null],
         change1Y: [null, null],
         favorite: false,
-    });
+    };
 
+    const [stockData, setStockData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+    const [filters, setFilters] = useState(initialFilters);
     const [activeCategory, setActiveCategory] = useState("Stocks");
 
     useEffect(() => {
@@ -60,6 +61,17 @@ function StockOverview() {
             [filterName]: value,
         }));
     };
+
+    const resetFilters = () => {
+        setFilters(initialFilters);
+    };
+
+    const hasActiveFilters = Object.keys(filters).some((key) => {
+        const value = filters[key];
+        const initialValue = initialFilters[key];
+        return JSON.stringify(value) !== JSON.stringify(initialValue);
+    });
+
 
     const filteredData = stockData.filter((stock) => {
         const matchesWatchlist = activeCategory !== "Watchlist" || stock.favorite;
@@ -112,15 +124,17 @@ function StockOverview() {
 
     return (
         <div className="container-fluid mt-4">
-            <CategoryTabs activeCategory={activeCategory} onCategoryChange={handleCategoryChange} />
             <div className="row">
-                <div className="col-md-3">
+                <div className="col-md-3 container">
+                    <CategoryTabs activeCategory={activeCategory} onCategoryChange={handleCategoryChange} />
                     <FiltersSidebar
                         filters={filters}
                         onFilterChange={handleFilterChange}
+                        onResetFilters={resetFilters}
+                        hasActiveFilters={hasActiveFilters}
                     />
                 </div>
-                <div className="col-md-9">
+                <div className="col-md-9 pb-5 ">
                     <StocksTable
                         data={filteredData}
                         sortConfig={sortConfig}
