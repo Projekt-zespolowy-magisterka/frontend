@@ -6,7 +6,7 @@ import CategoryTabs from "../components/stockOverview/CategoryTabs";
 
 function StockOverview() {
     const initialFilters = {
-        peRatio: [0, 40],
+        peRatio: [null, null],
         price: [null, null],
         search: "",
         volume: [null, null],
@@ -23,7 +23,6 @@ function StockOverview() {
     const [activeCategory, setActiveCategory] = useState("Stocks");
 
     useEffect(() => {
-        // Symulacja ładowania danych
         setStockData(mockedData);
         setLoading(false);
     }, []);
