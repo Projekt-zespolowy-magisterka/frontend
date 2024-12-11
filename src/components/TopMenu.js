@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 import LogoSection from './LogoSection';
 
 const TopMenu = ({ username, onLogout, onSearch }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [profileImage, setProfileImage] = useState('');
+
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -25,6 +27,11 @@ const TopMenu = ({ username, onLogout, onSearch }) => {
             onSearch(searchQuery.trim());
         }
     };
+
+    const handleNavigateToProfile = () => {
+        navigate('/profile');
+    };
+
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
@@ -89,7 +96,12 @@ const TopMenu = ({ username, onLogout, onSearch }) => {
                         </button>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
-                                <button className="dropdown-item">Profile</button>
+                                <button
+                                    className="dropdown-item"
+                                    onClick={handleNavigateToProfile}
+                                >
+                                    Profile
+                                </button>
                             </li>
                             <li>
                                 <hr className="dropdown-divider" />
