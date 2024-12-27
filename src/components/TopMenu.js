@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
 import LogoSection from './LogoSection';
+import {fetchStockDataBySymbol} from "../service/stockService";
 
 const TopMenu = ({ username, onLogout, onSearch }) => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -21,10 +22,18 @@ const TopMenu = ({ username, onLogout, onSearch }) => {
     }, [username]);
 
 
-    const handleSearchSubmit = (e) => {
+    const handleSearchSubmit = async (e) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
-            onSearch(searchQuery.trim());
+        if (!searchQuery.trim()) return;
+
+        try {
+            const stockData = await fetchStockDataBySymbol(searchQuery.trim());
+            if (stockData) {
+                navigate(`/stock/${searchQuery.trim()}`, { state: { stockData } });
+            }
+        } catch (error) {
+            console.error("Error fetching stock data:", error.message);
+            alert("Stock not found or an error occurred.");
         }
     };
 

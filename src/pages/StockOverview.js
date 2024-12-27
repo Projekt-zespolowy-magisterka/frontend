@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import mockedData from "../utils/mockedData";
+import { fetchStockData } from "../service/stockService";
 import FiltersSidebar from "../components/stockOverview/FiltersSidebar";
 import StocksTable from "../components/stockOverview/StocksTable";
 import CategoryTabs from "../components/stockOverview/CategoryTabs";
@@ -21,12 +21,32 @@ function StockOverview() {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
     const [filters, setFilters] = useState(initialFilters);
     const [activeCategory, setActiveCategory] = useState("Stocks");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        setStockData(mockedData);
-        setLoading(false);
-    }, []);
+        const loadStockData = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const { data, total } = await fetchStockData(currentPage, 10);
+                setStockData(data);
+                setTotalPages(Math.ceil(total / 10));
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        loadStockData();
+    }, [currentPage]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
     const toggleFavorite = (symbol) => {
         setStockData((prevData) =>
             prevData.map((stock) =>
@@ -36,7 +56,6 @@ function StockOverview() {
             )
         );
     };
-
 
     const handleSort = (key) => {
         let direction = "asc";
@@ -70,7 +89,6 @@ function StockOverview() {
         const initialValue = initialFilters[key];
         return JSON.stringify(value) !== JSON.stringify(initialValue);
     });
-
 
     const filteredData = stockData.filter((stock) => {
         const matchesWatchlist = activeCategory !== "Watchlist" || stock.favorite;
@@ -113,7 +131,6 @@ function StockOverview() {
         );
     });
 
-
     const handleCategoryChange = (category) => {
         setActiveCategory(category);
     };
@@ -133,12 +150,15 @@ function StockOverview() {
                         hasActiveFilters={hasActiveFilters}
                     />
                 </div>
-                <div className="col-md-9 pb-5 ">
+                <div className="col-md-9 pb-5">
                     <StocksTable
                         data={filteredData}
                         sortConfig={sortConfig}
-                        onSort={handleSort}
-                        onToggleFavorite={toggleFavorite}
+                        onSort={setSortConfig}
+                        onToggleFavorite={() => {}}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
                     />
                 </div>
             </div>
