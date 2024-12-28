@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import mockedData from "../utils/mockedData";
+import { fetchStockData } from "../service/stockService";
 import FiltersSidebar from "../components/stockOverview/FiltersSidebar";
 import StocksTable from "../components/stockOverview/StocksTable";
 import CategoryTabs from "../components/stockOverview/CategoryTabs";
+import {addFavoriteStock, getFavoriteStocks, removeFavoriteStock} from "../service/favoriteService";
 
 function StockOverview() {
     const initialFilters = {
@@ -16,27 +17,69 @@ function StockOverview() {
     };
 
     const [stockData, setStockData] = useState([]);
+    const [favoriteSymbols, setFavoriteSymbols] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
     const [filters, setFilters] = useState(initialFilters);
     const [activeCategory, setActiveCategory] = useState("Stocks");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        setStockData(mockedData);
-        setLoading(false);
-    }, []);
+        const loadStockData = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const { data, total } = await fetchStockData(currentPage, 10);
+                const favorites = await getFavoriteStocks();
 
-    const toggleFavorite = (symbol) => {
-        setStockData((prevData) =>
-            prevData.map((stock) =>
-                stock.symbol === symbol
-                    ? { ...stock, favorite: !stock.favorite }
-                    : stock
-            )
-        );
+                const favoriteSymbols = Array.isArray(favorites) ? favorites : [];
+
+                setStockData(
+                    data.map((stock) => ({
+                        ...stock,
+                        favorite: favoriteSymbols.includes(stock.symbol),
+                    }))
+                );
+                setFavoriteSymbols(favorites);
+                setTotalPages(Math.ceil(total / 10));
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadStockData();
+    }, [currentPage]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
     };
+    const toggleFavorite = async (symbol) => {
+        try {
+            if (favoriteSymbols.includes(symbol)) {
+                await removeFavoriteStock(symbol);
+                setFavoriteSymbols((prev) => prev.filter((fav) => fav !== symbol));
+            } else {
+                await addFavoriteStock(symbol);
+                setFavoriteSymbols((prev) => [...prev, symbol]);
+            }
 
+            setStockData((prevData) =>
+                prevData.map((stock) =>
+                    stock.symbol === symbol
+                        ? { ...stock, favorite: !stock.favorite }
+                        : stock
+                )
+            );
+        } catch (error) {
+            console.error("Error toggling favorite:", error);
+        }
+    };
 
     const handleSort = (key) => {
         let direction = "asc";
@@ -70,7 +113,6 @@ function StockOverview() {
         const initialValue = initialFilters[key];
         return JSON.stringify(value) !== JSON.stringify(initialValue);
     });
-
 
     const filteredData = stockData.filter((stock) => {
         const matchesWatchlist = activeCategory !== "Watchlist" || stock.favorite;
@@ -113,7 +155,6 @@ function StockOverview() {
         );
     });
 
-
     const handleCategoryChange = (category) => {
         setActiveCategory(category);
     };
@@ -133,12 +174,15 @@ function StockOverview() {
                         hasActiveFilters={hasActiveFilters}
                     />
                 </div>
-                <div className="col-md-9 pb-5 ">
+                <div className="col-md-9 pb-5">
                     <StocksTable
                         data={filteredData}
                         sortConfig={sortConfig}
-                        onSort={handleSort}
+                        onSort={setSortConfig}
                         onToggleFavorite={toggleFavorite}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
                     />
                 </div>
             </div>

@@ -1,7 +1,10 @@
 import React from "react";
 
 function CategoryTabs({ activeCategory, onCategoryChange }) {
-    const categories = ["Stocks", "ETFs", "Bonds", "Watchlist"];
+    const categories = ["Stocks",
+        // "ETFs",
+        // "Bonds",
+        "Watchlist"];
 
     return (
         <div className="btn-group mb-3" role="group" aria-label="Category tabs">

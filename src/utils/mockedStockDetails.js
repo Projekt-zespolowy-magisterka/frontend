@@ -7,12 +7,6 @@ const mockedStockDetailsList = [
             absolute: -36.78, // Assuming this from 1M percentage change
             percentage: -7.81,
         },
-        marketStatus: "Stock market closed (will be opened at 3:30 PM CET)",
-        timeFrames: ["1D", "5D", "1M", "3M", "6M", "YTD", "1Y", "5Y", "ALL"],
-        chartData: [
-            { time: "16:00", high: 470.00, low: 460.00, open: 468.00, close: 463.72 },
-            { time: "17:00", high: 472.00, low: 461.00, open: 463.72, close: 469.00 },
-        ],
         scores: [
             { label: "Score 1", buy: 75, hold: 20, sell: 5 },
             { label: "Score 2", buy: 80, hold: 15, sell: 5 },
