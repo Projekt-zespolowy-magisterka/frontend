@@ -9,17 +9,17 @@ const ProfilePage = ({ userId, onLogout }) => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const profile = await getUserProfile(userId);
-                setUserDetails(profile);
-            } catch (error) {
-                console.error('Failed to fetch user profile:', error);
-                setError('Failed to load profile. Please try again.');
-            }
-        };
+    const fetchUserProfile = async () => {
+        try {
+            const profile = await getUserProfile(userId);
+            setUserDetails(profile);
+        } catch (error) {
+            console.error('Failed to fetch user profile:', error);
+            setError('Failed to load profile. Please try again.');
+        }
+    };
 
+    useEffect(() => {
         fetchUserProfile();
     }, [userId]);
 
@@ -33,8 +33,8 @@ const ProfilePage = ({ userId, onLogout }) => {
         setError('');
 
         try {
-            const updatedProfile = await updateUserProfile(userId, userDetails);
-            setUserDetails(updatedProfile);
+            await updateUserProfile(userDetails);
+            await fetchUserProfile();
             setIsEditing(false);
         } catch (error) {
             console.error('Failed to update profile:', error);

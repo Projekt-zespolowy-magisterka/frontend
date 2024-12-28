@@ -3,6 +3,7 @@ import { fetchStockData } from "../service/stockService";
 import FiltersSidebar from "../components/stockOverview/FiltersSidebar";
 import StocksTable from "../components/stockOverview/StocksTable";
 import CategoryTabs from "../components/stockOverview/CategoryTabs";
+import {addFavoriteStock, getFavoriteStocks, removeFavoriteStock} from "../service/favoriteService";
 
 function StockOverview() {
     const initialFilters = {
@@ -16,6 +17,7 @@ function StockOverview() {
     };
 
     const [stockData, setStockData] = useState([]);
+    const [favoriteSymbols, setFavoriteSymbols] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
@@ -30,7 +32,17 @@ function StockOverview() {
             setError(null);
             try {
                 const { data, total } = await fetchStockData(currentPage, 10);
-                setStockData(data);
+                const favorites = await getFavoriteStocks();
+
+                const favoriteSymbols = Array.isArray(favorites) ? favorites : [];
+
+                setStockData(
+                    data.map((stock) => ({
+                        ...stock,
+                        favorite: favoriteSymbols.includes(stock.symbol),
+                    }))
+                );
+                setFavoriteSymbols(favorites);
                 setTotalPages(Math.ceil(total / 10));
             } catch (err) {
                 setError(err.message);
@@ -47,14 +59,26 @@ function StockOverview() {
             setCurrentPage(newPage);
         }
     };
-    const toggleFavorite = (symbol) => {
-        setStockData((prevData) =>
-            prevData.map((stock) =>
-                stock.symbol === symbol
-                    ? { ...stock, favorite: !stock.favorite }
-                    : stock
-            )
-        );
+    const toggleFavorite = async (symbol) => {
+        try {
+            if (favoriteSymbols.includes(symbol)) {
+                await removeFavoriteStock(symbol);
+                setFavoriteSymbols((prev) => prev.filter((fav) => fav !== symbol));
+            } else {
+                await addFavoriteStock(symbol);
+                setFavoriteSymbols((prev) => [...prev, symbol]);
+            }
+
+            setStockData((prevData) =>
+                prevData.map((stock) =>
+                    stock.symbol === symbol
+                        ? { ...stock, favorite: !stock.favorite }
+                        : stock
+                )
+            );
+        } catch (error) {
+            console.error("Error toggling favorite:", error);
+        }
     };
 
     const handleSort = (key) => {
@@ -155,7 +179,7 @@ function StockOverview() {
                         data={filteredData}
                         sortConfig={sortConfig}
                         onSort={setSortConfig}
-                        onToggleFavorite={() => {}}
+                        onToggleFavorite={toggleFavorite}
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={handlePageChange}

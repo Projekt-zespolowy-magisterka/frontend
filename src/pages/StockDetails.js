@@ -31,7 +31,7 @@ function StockDetails() {
 
     return (
         <div className="container mt-1">
-            {/*<BackButton onClick={() => navigate(-1)} />*/}
+            <BackButton onClick={() => navigate(-1)} />
             <StockHeader symbol={stock.symbol} name={stock.name} />
             <StockPrice currentPrice={stock.currentPrice} change={stock.change} />
             {/*<TimeFrameSelector timeFrames={stock.timeFrames} />*/}

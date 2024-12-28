@@ -1,10 +1,37 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
+import {addFavoriteStock, getFavoriteStocks, removeFavoriteStock} from "../../service/favoriteService";
 
 function StockHeader({ symbol, name }) {
     const [isFavorite, setIsFavorite] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const handleToggleFavorite = () => {
-        setIsFavorite(!isFavorite);
+    useEffect(() => {
+        const fetchFavoriteStatus = async () => {
+            try {
+                const favorites = await getFavoriteStocks();
+                setIsFavorite(favorites.includes(symbol));
+            } catch (error) {
+                console.error("Error fetching favorite status:", error);
+            }
+        };
+
+        fetchFavoriteStatus();
+    }, [symbol]);
+
+    const handleToggleFavorite = async () => {
+        setLoading(true);
+        try {
+            if (isFavorite) {
+                await removeFavoriteStock(symbol);
+            } else {
+                await addFavoriteStock(symbol);
+            }
+            setIsFavorite(!isFavorite);
+        } catch (error) {
+            console.error("Error toggling favorite status:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
