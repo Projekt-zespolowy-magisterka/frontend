@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Routes, Route, Navigate, useLocation, matchPath} from 'react-router-dom';
 import Login from './pages/LoginPage';
 import RegistrationPage from "./pages/RegistrationPage";
+import AdminPanel from './pages/AdminPanel';
 
 import TopMenu from './components/TopMenu';
 import StockOverview from './pages/StockOverview';
@@ -67,6 +68,7 @@ function App() {
           <Route path="/stock-overview" element={isLoggedIn ? <StockOverview /> : <Navigate to="/login" />} />
           <Route path="/watchlist" element={isLoggedIn ? <Watchlist /> : <Navigate to="/login" />} />
           <Route path="/stock/:symbol" element={isLoggedIn ? <StockDetails /> : <Navigate to="/login" />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </>
   );
