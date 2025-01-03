@@ -31,6 +31,7 @@ function App() {
     localStorage.setItem('isLoggedIn', true);
     localStorage.setItem('username', userEmail);
     localStorage.setItem('userToken', userToken);
+    //dodać role
     localStorage.setItem('userId', userId);
     setIsLoggedIn(true);
     setUsername(userEmail);
@@ -56,7 +57,7 @@ function App() {
       matchPath('/stock/:symbol', location.pathname);
 
   return (
-      <>
+      <> 
         {isLoggedIn && isDashboardPage && (
             <TopMenu username={username} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
         )}
