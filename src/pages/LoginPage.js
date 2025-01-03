@@ -6,6 +6,7 @@ import LogoSection from '../components/LogoSection';
 import AuthForm from '../components/AuthForm';
 import appTheme from '../theme';
 import {useNavigate} from "react-router-dom";
+import { jwtDecode } from 'jwt-decode'; //dekodowanie tokenu
 import {authenticateUser} from "../service/authService";
 
 const LoginPageContainer = styled(Container)({
@@ -23,6 +24,7 @@ const testUser = {
     password: 'test',
     token: 'testToken123',
     id: '12345',
+    roles: ['USER'], // Dodano role dla testowego użytkownika
 };
 
 const LoginPage = ({ onLogin }) => {
@@ -36,9 +38,25 @@ const LoginPage = ({ onLogin }) => {
             const response = await authenticateUser({ email, password });
 
             if (response) {
+
+                // Dekodowanie tokena
+                const decodedToken = jwtDecode(response.token);
+                const roles = decodedToken.authorities?.map(auth => auth.authority) || [];
+
+                // Zapisanie danych w localStorage
+                localStorage.setItem('userRoles', JSON.stringify(roles));
+                localStorage.setItem('userToken', response.token);
+
+                // Przekazanie użytkownika do globalnego stanu
                 onLogin(email, response.token, response.id);
                 console.log('User login:', response);
-                navigate('/stock-overview');
+
+                // Przekierowanie na podstawie roli
+                if (roles.includes('ADMIN')) {
+                    navigate('/admin');
+                } else {
+                    navigate('/stock-overview');
+                }
             } else {
                 throw new Error('Invalid response from server');
             }
@@ -55,6 +73,8 @@ const LoginPage = ({ onLogin }) => {
             // Jeżeli serwer zawiedzie, próbujemy logowania na konto testowe
             if (email === testUser.email && password === testUser.password) {
                 console.log('Logging in with test account');
+                localStorage.setItem('userRoles', JSON.stringify(testUser.roles));
+                localStorage.setItem('userToken', testUser.token);
                 onLogin(testUser.email, testUser.token, testUser.id);
                 navigate('/stock-overview');
             } else {
