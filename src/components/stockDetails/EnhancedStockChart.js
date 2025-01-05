@@ -15,11 +15,13 @@ import {
     CrossHairCursor,
     discontinuousTimeScaleProviderBuilder,
     LineSeries,
+    ScatterSeries,
     ema,
     EdgeIndicator,
+    CircleMarker,
 } from "react-financial-charts";
 
-const EnhancedStockChart = ({ data }) => {
+const EnhancedStockChart = ({ data, predictionData }) => {
     const [chartDimensions, setChartDimensions] = useState({ width: 1200, height: 500 });
     const chartContainerRef = useRef(null);
 
@@ -46,6 +48,8 @@ const EnhancedStockChart = ({ data }) => {
         return <p>No data available to display the chart</p>;
     }
 
+    const combinedData = [...data, ...predictionData];
+
     const ema12 = ema()
         .id(1)
         .options({ windowSize: 12 })
@@ -62,7 +66,7 @@ const EnhancedStockChart = ({ data }) => {
         })
         .accessor((d) => d.ema26);
 
-    const calculatedData = ema26(ema12(data));
+    const calculatedData = ema26(ema12(combinedData));
 
     const ScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
         (d) => new Date(d.date)
@@ -80,13 +84,6 @@ const EnhancedStockChart = ({ data }) => {
     const pricesDisplayFormat = format(".2f");
     const volumeColor = (d) => (d.close > d.open ? "rgba(38, 166, 154, 0.3)" : "rgba(239, 83, 80, 0.3)");
 
-    const customZoomAnchor = (options) => {
-        const { xScale } = options;
-        const domain = xScale.domain();
-        const center = (domain[1] + domain[0]) / 2;
-        return center;
-    };
-
     return (
         <div ref={chartContainerRef} style={{ width: "100%", height: "auto" }}>
             <ChartCanvas
@@ -100,12 +97,11 @@ const EnhancedStockChart = ({ data }) => {
                 xAccessor={xAccessor}
                 displayXAccessor={displayXAccessor}
                 xExtents={xExtents}
-                zoomAnchor={customZoomAnchor}
             >
-                <Chart id={1} yExtents={(d) => d.volume} origin={[0, 400]} height={100}>
-                    <BarSeries yAccessor={(d) => d.volume} fillStyle={volumeColor} />
-                    <YAxis axisAt="left" orient="left" />
-                </Chart>
+                {/*<Chart id={1} yExtents={(d) => d.volume} origin={[0, 400]} height={100}>*/}
+                {/*    <BarSeries yAccessor={(d) => d.volume} fillStyle={volumeColor} />*/}
+                {/*    <YAxis axisAt="left" orient="left" />*/}
+                {/*</Chart>*/}
 
                 <Chart id={2} yExtents={(d) => [d.high, d.low]}>
                     <XAxis axisAt="bottom" orient="bottom" />
@@ -113,6 +109,19 @@ const EnhancedStockChart = ({ data }) => {
                     <CandlestickSeries />
                     <LineSeries yAccessor={ema12.accessor()} strokeStyle={ema12.stroke()} />
                     <LineSeries yAccessor={ema26.accessor()} strokeStyle={ema26.stroke()} />
+
+                    {/* Scatter for Predictions */}
+                    <ScatterSeries
+                        yAccessor={(d) => (d.isPrediction ? d.close : null)}
+                        marker={CircleMarker}
+                        markerProps={{
+                            r: 4,
+                            fill: "rgba(237,71,255,0.3)", // Faded fill color for predictions
+                            stroke: "rgba(71,108,255,0.5)", // Faded stroke color for predictions
+                        }}
+                    />
+
+
                     <MovingAverageTooltip
                         options={[
                             { yAccessor: ema12.accessor(), type: "EMA", stroke: ema12.stroke(), windowSize: 12 },
@@ -120,11 +129,13 @@ const EnhancedStockChart = ({ data }) => {
                         ]}
                         origin={[0, 10]}
                     />
+
                     <OHLCTooltip origin={[0, 0]} />
                     <MouseCoordinateX displayFormat={timeFormat("%H:%M")} />
                     <MouseCoordinateY displayFormat={pricesDisplayFormat} />
                     <EdgeIndicator itemType="last" orient="right" edgeAt="right" yAccessor={(d) => d.close} />
                 </Chart>
+
                 <CrossHairCursor />
             </ChartCanvas>
         </div>
