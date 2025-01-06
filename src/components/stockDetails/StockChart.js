@@ -42,7 +42,7 @@ const StockChart = ({initialData, predictionData}) => {
         .id(1)
         .options({ windowSize: 12 })
         .merge((d, c) => {
-            d.ema12 = c;
+            d.ema12 = c || d.ema12 || null;
         })
         .accessor((d) => d.ema12);
 
@@ -50,13 +50,27 @@ const StockChart = ({initialData, predictionData}) => {
         .id(2)
         .options({ windowSize: 26 })
         .merge((d, c) => {
-            d.ema26 = c;
+            d.ema26 = c || d.ema26 || null;
         })
         .accessor((d) => d.ema26);
 
     const elder = elderRay();
 
-    const mergedData = [...initialData, ...predictionData];
+    const addDefaultValues = (data) =>
+        data.map((item) => ({
+            ...item,
+            high: item.high || 0,
+            low: item.low || 0,
+            open: item.open || 0,
+            close: item.close || 0,
+            volume: item.volume || 0,
+            ema12: item.ema12 !== undefined ? item.ema12 : null,
+            ema26: item.ema26 !== undefined ? item.ema26 : null,
+        }));
+
+
+    const mergedData = addDefaultValues([...initialData, ...predictionData]);
+
     const calculatedData = elder(ema26(ema12(mergedData)));
     const { data, xScale, xAccessor, displayXAccessor } = ScaleProvider(
         calculatedData
