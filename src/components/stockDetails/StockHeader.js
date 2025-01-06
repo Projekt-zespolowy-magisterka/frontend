@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {addFavoriteStock, getFavoriteStocks, removeFavoriteStock} from "../../service/favoriteService";
+import BackButton from "./BackButton";
+import {useNavigate} from "react-router-dom";
 
 function StockHeader({ symbol, name }) {
     const [isFavorite, setIsFavorite] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFavoriteStatus = async () => {
@@ -37,10 +40,14 @@ function StockHeader({ symbol, name }) {
     return (
         <div className="mb-4">
             {/* Stock Symbol, Name, and Star Button in One Line */}
-            <div className="d-flex align-items-center justify-content-between ms-3">
-                <h1 className="fw-bold me-2" style={{ fontSize: "1.8rem", margin: 0 }}>
-                    {symbol || "N/A"} <span className="text-muted" style={{ fontSize: "1.5rem" }}>{name || "N/A"}</span>
-                </h1>
+            <BackButton onClick={() => navigate(-1)} />
+            <div className="d-flex align-items-center justify-content-between ">
+
+
+                    <h1 className="fw-bold me-2 ms-4" style={{ fontSize: "1.8rem", margin: 0 }}>
+                        {symbol || "N/A"} <span className="text-muted" style={{ fontSize: "1.5rem" }}>{name || "N/A"}</span>
+                    </h1>
+
                 {/* Star Button */}
                 <button
                     onClick={handleToggleFavorite}
