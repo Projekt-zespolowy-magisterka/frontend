@@ -87,7 +87,6 @@ function StockRow({ stock, index, onToggleFavorite }) {
             <td>{formatChange(stock.change3M)}</td>
             <td>{formatChange(stock.change6M)}</td>
             <td>{formatChange(stock.change1Y)}</td>
-            <td>{formatChange(stock.change3Y)}</td>
         </tr>
     );
 }
