@@ -1,17 +1,18 @@
-// userService.js
+import { config } from '../profiles';
 
 const getAuthHeaders = () => {
     const userToken = localStorage.getItem('userToken');
-    return userToken ? {
-        'Authorization': `Bearer ${userToken}`,
-        'Content-Type': 'application/json', // Ensure correct Content-Type
-    } : {};
+    return userToken
+        ? {
+            Authorization: `Bearer ${userToken}`,
+            'Content-Type': 'application/json',
+        }
+        : {};
 };
 
 export const getUserProfile = async () => {
     try {
-
-        const response = await fetch('http://localhost:8080/app/users/me', {
+        const response = await fetch(`${config.API_BASE_URL}/app/users/me`, {
             method: 'GET',
             headers: getAuthHeaders(),
         });
@@ -20,8 +21,7 @@ export const getUserProfile = async () => {
             throw new Error(`Failed to fetch user profile: ${response.statusText}`);
         }
 
-        const data = await response.json();
-        return data.user;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching user profile:', error);
         throw error;
@@ -30,10 +30,7 @@ export const getUserProfile = async () => {
 
 export const updateUserProfile = async (updatedProfile) => {
     try {
-
-        console.info(JSON.stringify(updatedProfile))
-
-        const response = await fetch('http://localhost:8080/app/users/me', {
+        const response = await fetch(`${config.API_BASE_URL}/app/users/me`, {
             method: 'PATCH',
             headers: getAuthHeaders(),
             body: JSON.stringify(updatedProfile),
@@ -43,11 +40,9 @@ export const updateUserProfile = async (updatedProfile) => {
             throw new Error(`Failed to update user profile: ${response.statusText}`);
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error updating user profile:', error);
         throw error;
     }
 };
-

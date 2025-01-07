@@ -1,3 +1,5 @@
+import {config} from "../profiles";
+
 const sanitizeRawJSON = (rawJSON) => {
     return rawJSON.replace(/NaN/g, '"NaN"');
 };
@@ -34,7 +36,7 @@ const handleFetchError = (response) => {
 };
 
 export const fetchStockData = async (page = 1, perPage = 10) => {
-    const apiUrl = `http://localhost:8080/predictor/data/tickers?page=${page}&per_page=${perPage}`;
+    const apiUrl = `${config.API_BASE_URL}/predictor/data/tickers?page=${page}&per_page=${perPage}`;
 
     try {
         const response = await fetch(apiUrl, {
@@ -65,7 +67,7 @@ export const fetchStockData = async (page = 1, perPage = 10) => {
 
 
 export const fetchStockDataBySymbol = async (symbol, period = "1y", interval = "1h") => {
-    const apiUrl = `http://localhost:8080/predictor/data/stock_info/${symbol}`;
+    const apiUrl = `${config.API_BASE_URL}/predictor/data/stock_info/${symbol}`;
 
     try {
         const response = await fetch(apiUrl, {
