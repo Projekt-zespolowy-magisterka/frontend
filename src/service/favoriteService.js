@@ -1,8 +1,10 @@
+import {config} from "../profiles";
+
 const getAuthHeaders = () => {
     const userToken = localStorage.getItem('userToken');
     return userToken
         ? {
-            'Authorization': `Bearer ${userToken}`,
+            Authorization: `Bearer ${userToken}`,
             'Content-Type': 'application/json',
         }
         : {};
@@ -10,7 +12,7 @@ const getAuthHeaders = () => {
 
 export const getFavoriteStocks = async () => {
     try {
-        const response = await fetch('http://localhost:8080/app/favorites', {
+        const response = await fetch(`${config.API_BASE_URL}/app/favorites`, {
             method: 'GET',
             headers: getAuthHeaders(),
         });
@@ -19,13 +21,7 @@ export const getFavoriteStocks = async () => {
             throw new Error(`Failed to fetch favorite stocks: ${response.statusText}`);
         }
 
-        console.log(response)
-
         const data = await response.json();
-
-        console.log(data)
-
-        // Ensure data.stockSymbol is returned as an array
         return data.stockSymbol || [];
     } catch (error) {
         console.error('Error fetching favorite stocks:', error);
@@ -33,10 +29,9 @@ export const getFavoriteStocks = async () => {
     }
 };
 
-
 export const addFavoriteStock = async (stockSymbol) => {
     try {
-        const response = await fetch('http://localhost:8080/app/favorites', {
+        const response = await fetch(`${config.API_BASE_URL}/app/favorites`, {
             method: 'POST',
             headers: getAuthHeaders(),
             body: JSON.stringify({ stockSymbol: [stockSymbol] }),
@@ -55,7 +50,7 @@ export const addFavoriteStock = async (stockSymbol) => {
 
 export const removeFavoriteStock = async (stockSymbol) => {
     try {
-        const response = await fetch(`http://localhost:8080/app/favorites/${stockSymbol}`, {
+        const response = await fetch(`${config.API_BASE_URL}/app/favorites/${stockSymbol}`, {
             method: 'DELETE',
             headers: getAuthHeaders(),
         });

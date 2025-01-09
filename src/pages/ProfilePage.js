@@ -58,6 +58,7 @@ const ProfilePage = ({ onLogout }) => {
     };
   
     fetchProfile();
+        console.log(userDetails);
   }, [userIdParam]);
   
   
@@ -141,17 +142,17 @@ const ProfilePage = ({ onLogout }) => {
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formPhone" className="mb-3">
-                  <Form.Label>Phone Number</Form.Label>
-                  <Form.Control
-                    type="tel"
-                    value={userDetails.phone || ''}
-                    disabled={!isEditing}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, phone: e.target.value })
-                    }
-                  />
-                </Form.Group>
+                {/*<Form.Group controlId="formPhone" className="mb-3">*/}
+              {/*    <Form.Label>Phone Number</Form.Label>*/}
+              {/*    <Form.Control*/}
+            {/*        type="tel"*/}
+            {/*        value={userDetails.phone || ''}*/}
+            {/*        disabled={!isEditing}*/}
+            {/*        onChange={(e) =>*/}
+          {/*            setUserDetails({ ...userDetails, phone: e.target.value })*/}
+            {/*        }*/}
+              {/*    />*/}
+                {/*</Form.Group>*/}
 
                 {/* Adres (jeśli istnieje) */}
                 <Form.Group controlId="formAddress" className="mb-3">

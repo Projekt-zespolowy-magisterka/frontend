@@ -1,4 +1,4 @@
-// userService.js
+import { config } from '../profiles';
 
 const getAuthHeaders = () => {
     const userToken = localStorage.getItem('userToken');

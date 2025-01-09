@@ -11,7 +11,6 @@ function TableHeader({ sortConfig, onSort }) {
         { key: "change3M", label: "3M in %" },
         { key: "change6M", label: "6M in %" },
         { key: "change1Y", label: "1Y in %" },
-        { key: "change3Y", label: "3Y in %" },
     ];
 
     return (
