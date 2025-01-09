@@ -1,41 +1,31 @@
-// src/components/UsersTable.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const UsersTable = () => {
+
+const UsersTable = ({ filters }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem('userToken');
-      if (!token) {
-        console.error('Brak tokena w localStorage!');
-        setError('Brak tokena w localStorage.');
-        setLoading(false);
-        return;
-      }
-
       try {
         const response = await fetch('http://localhost:8080/app/users/all', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token.trim()}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error(`Błąd HTTP: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
         setUsers(data);
       } catch (error) {
-        console.error('Błąd podczas pobierania użytkowników:', error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -45,32 +35,6 @@ const UsersTable = () => {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (id) => {
-    const token = localStorage.getItem('userToken');
-    try {
-      const response = await fetch(`http://localhost:8080/app/users/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token.trim()}`,
-        },
-      });
-
-      if (response.ok) {
-        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-      } else {
-        console.error('Błąd podczas usuwania użytkownika:', response.status);
-      }
-    } catch (error) {
-      console.error('Błąd podczas usuwania użytkownika:', error);
-    }
-  };
-
-  const handleEdit = (id) => {
-    // Przejście do ścieżki /profile?id=ID
-    navigate(`/profile?id=${id}`);
-  };
-
   if (loading) {
     return <p>Loading users...</p>;
   }
@@ -78,6 +42,13 @@ const UsersTable = () => {
   if (error) {
     return <p>Error: {error}</p>;
   }
+
+  // Filter users based on searchBy and searchTerm
+  const filteredUsers = users.filter((user) => {
+    const searchField = filters.searchBy || 'email'; // Default to email
+    const searchTerm = filters.searchTerm.toLowerCase() || '';
+    return user[searchField]?.toLowerCase().includes(searchTerm);
+  });
 
   return (
     <div>
@@ -89,29 +60,19 @@ const UsersTable = () => {
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
-            <th>Actions</th> 
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.firstName}</td>
               <td>{user.lastName}</td>
               <td>{user.email}</td>
               <td>
-                <button
-                  className="btn btn-primary btn-sm me-2"
-                  onClick={() => handleEdit(user.id)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Delete
-                </button>
+                <button className="btn btn-primary btn-sm me-2">Edit</button>
+                <button className="btn btn-danger btn-sm">Delete</button>
               </td>
             </tr>
           ))}
