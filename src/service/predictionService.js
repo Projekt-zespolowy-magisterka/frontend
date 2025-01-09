@@ -1,3 +1,5 @@
+import {config} from "../profiles";
+
 const sanitizeRawJSON = (rawJSON) => {
     return rawJSON.replace(/NaN/g, '"NaN"');
 };
@@ -38,7 +40,7 @@ export const fetchPredictionData = async (
     interval = "1h",
     daysAhead = "3d"
 ) => {
-    const apiUrl = `http://127.0.0.1:8080/predictor/predict/${symbol}?period=${period}&interval=${interval}&days_ahead=${daysAhead}`;
+    const apiUrl = `${config.API_BASE_URL}/predictor/predict/${symbol}?period=${period}&interval=${interval}&days_ahead=${daysAhead}`;
 
     try {
         const response = await fetch(apiUrl, {

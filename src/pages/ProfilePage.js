@@ -12,7 +12,8 @@ const ProfilePage = ({ userId, onLogout }) => {
     const fetchUserProfile = async () => {
         try {
             const profile = await getUserProfile(userId);
-            setUserDetails(profile);
+            setUserDetails(profile.user);
+            console.log(profile);
         } catch (error) {
             console.error('Failed to fetch user profile:', error);
             setError('Failed to load profile. Please try again.');
@@ -21,6 +22,7 @@ const ProfilePage = ({ userId, onLogout }) => {
 
     useEffect(() => {
         fetchUserProfile();
+        console.log(userDetails);
     }, [userId]);
 
     const handleEditToggle = () => {
@@ -94,17 +96,17 @@ const ProfilePage = ({ userId, onLogout }) => {
                                     />
                                 </Form.Group>
 
-                                <Form.Group controlId="formPhone" className="mb-3">
-                                    <Form.Label>Phone Number</Form.Label>
-                                    <Form.Control
-                                        type="tel"
-                                        value={userDetails.phone || ''}
-                                        disabled={!isEditing}
-                                        onChange={(e) =>
-                                            setUserDetails({ ...userDetails, phone: e.target.value })
-                                        }
-                                    />
-                                </Form.Group>
+                                {/*<Form.Group controlId="formPhone" className="mb-3">*/}
+                                {/*    <Form.Label>Phone Number</Form.Label>*/}
+                                {/*    <Form.Control*/}
+                                {/*        type="tel"*/}
+                                {/*        value={userDetails.phone || ''}*/}
+                                {/*        disabled={!isEditing}*/}
+                                {/*        onChange={(e) =>*/}
+                                {/*            setUserDetails({ ...userDetails, phone: e.target.value })*/}
+                                {/*        }*/}
+                                {/*    />*/}
+                                {/*</Form.Group>*/}
 
                                 <Form.Group controlId="formAddress" className="mb-3">
                                     <Form.Label>Address</Form.Label>
@@ -133,19 +135,19 @@ const ProfilePage = ({ userId, onLogout }) => {
                                             })
                                         }
                                     />
-                                    <Form.Control
-                                        type="text"
-                                        value={userDetails.address?.zip || ''}
-                                        placeholder="ZIP Code"
-                                        disabled={!isEditing}
-                                        className="mt-2"
-                                        onChange={(e) =>
-                                            setUserDetails({
-                                                ...userDetails,
-                                                address: { ...userDetails.address, zip: e.target.value },
-                                            })
-                                        }
-                                    />
+                                    {/*<Form.Control*/}
+                                    {/*    type="text"*/}
+                                    {/*    value={userDetails.address?.zip || ''}*/}
+                                    {/*    placeholder="ZIP Code"*/}
+                                    {/*    disabled={!isEditing}*/}
+                                    {/*    className="mt-2"*/}
+                                    {/*    onChange={(e) =>*/}
+                                    {/*        setUserDetails({*/}
+                                    {/*            ...userDetails,*/}
+                                    {/*            address: { ...userDetails.address, zip: e.target.value },*/}
+                                    {/*        })*/}
+                                    {/*    }*/}
+                                    {/*/>*/}
                                 </Form.Group>
 
                                 {isEditing ? (
