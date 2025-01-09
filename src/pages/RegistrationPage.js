@@ -70,10 +70,10 @@ const RegistrationPage = ({ onLogin }) => {
                     { name: 'confirmPassword', label: 'Confirm Password', type: 'password' },
                     { name: 'firstName', label: 'First Name', type: 'text' },
                     { name: 'lastName', label: 'Last Name', type: 'text' },
-                    { name: 'phone', label: 'Phone Number', type: 'tel' },
+                    // { name: 'phone', label: 'Phone Number', type: 'tel' },
                     { name: 'city', label: 'City', type: 'text' },
                     { name: 'street', label: 'Street', type: 'text' },
-                    { name: 'zip', label: 'ZIP Code', type: 'text' },
+                    // { name: 'zip', label: 'ZIP Code', type: 'text' },
                 ]}
                 onSubmit={handleRegister}
                 error={registrationError}
